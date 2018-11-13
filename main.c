@@ -3,18 +3,19 @@
 #include <locale.h>
 #include <time.h>
 
-
 void displayArea(char *area);
-short inCross();
-short inZero();
+void inCross(char *area);
+void inZero(char *area);
 short winCombination(char *area);
-short easyBot(char *area);
+
+
 
 
 int main(void)
 {
-	srand(time(NULL));
-	system("color F0");
+	
+	
+	/*
 	setlocale(LC_ALL, "RU");
 
 	char area[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -22,60 +23,18 @@ int main(void)
 	//Основной цикл
 	for (int i = 1; i < 10; i++)
 	{
-		short pos, checkWin, whileTrueForX, whileTrueFor0;
-		whileTrueForX = 1;
-		whileTrueFor0 = 1;
+		short checkWin;
 
 		// Добавление крестика
 		if (i == 1 || i == 3 || i == 5 || i == 7 || i == 9)
 		{
-			printf("ХОД КРЕСТИКА!");
-			pos = inCross();
-			while (whileTrueForX == 1)
-			{
-				if (area[pos] != 0 && area[pos] != 'X')
-				{
-					area[pos] = 'X';
-					displayArea(area);
-					whileTrueForX = 0;
-				}
-				else if (area[pos] == 'X')
-				{
-					puts("Вы уже использовали этот ход, повторите снова...");
-					pos = inCross();
-				}
-				else if (area[pos] == 0)
-				{
-					puts("Вы попытались замазать ход противника, выбите другой ход");
-					pos = inCross();
-				}
-			}
+			inCross(area);
 		}
 
 		// Добавление нолика
 		else
 		{
-			printf("ХОД НОЛИКА!");
-			pos = inZero();
-			while (whileTrueFor0 == 1)
-			{
-				if (area[pos] != 0 && area[pos] != 'X')
-				{
-					area[pos] = 0;
-					displayArea(area);
-					whileTrueFor0 = 0;
-				}
-				else if (area[pos] == 0)
-				{
-					puts("Вы уже использовали этот ход, повторите снова...");
-					pos = inCross();
-				}
-				else if (area[pos] == 'X')
-				{
-					puts("Вы попытались замазать ход противника, выбите другой ход");
-					pos = inCross();
-				}
-			}
+			inZero(area);
 		}
 
 		// Проверка на победу(после 2-го хода каждого из противников)
@@ -94,8 +53,14 @@ int main(void)
 				puts(" *-------- ПОБЕДИЛ НОЛИК -------*");
 				break;
 			}
+			else if (i == 9)
+			{
+				system("color F4");
+				puts(" *-------- НИЧЬЯ -------*");
+				break;
+			}
 		}
-	}
+	}*/
 
 	while (getchar() != '\n');
 	getchar();
@@ -106,6 +71,7 @@ int main(void)
 //////////   ВЫВОД КЛЕТОК  /////////
 void displayArea(char *area)
 {
+	system("cls");
 	printf("\n\n");
 	for (int i = 1; i < 10; i++)
 	{
@@ -120,43 +86,76 @@ void displayArea(char *area)
 }
 
 ///////////   КРЕСТИК      ////////	
-short inCross()
+void inCross(char *area)
 {
-	short pos, ifNormal;
+	printf("ХОД КРЕСТИКА!");
+	int pos, ifNormal;
 	ifNormal = 1;
 	while (ifNormal == 1)
 	{
 		printf("\nВведите позицию для крестика: ");
-		scanf_s("%i", &pos);
+		scanf("%d", &pos);
 		if (pos > 0 && pos < 10)
-			ifNormal = 0;
+		{
+			if (area[pos] != 0 && area[pos] != 'X')
+			{
+				area[pos] = 'X';
+				displayArea(area);
+				ifNormal = 0;
+			}
+			else if (area[pos] == 'X')
+			{
+				puts("Вы уже использовали этот ход, повторите снова...");
+				pos = 0;
+			}
+			else if (area[pos] == 0)
+			{
+				puts("Вы попытались замазать ход противника, выбите другой ход");
+				pos = 0;
+			}
+			
+	    }
 		else
 		{
 			printf("\nТакой позиции не существует, повторите попытку...");
 			pos = 0;
 		}
 	}
-
-	return pos;
 }
  
 ////////////   НОЛИК  //////////////
 
-short inZero()
+void inZero(char* area)
 {
-	short pos, ifNormal;
+	printf("ХОД НОЛИКА!");
+	int pos, ifNormal;
 	ifNormal = 1;
 	while (ifNormal == 1)
 	{
 		printf("\nВведите позицию для нолика: ");
-		scanf_s("%i", &pos);
+		scanf("%d", &pos);
 		if (pos > 0 && pos < 10)
-			ifNormal = 0;
+		{
+			if (area[pos] != 'X' && area[pos] != 0)
+			{
+				area[pos] = 0;
+				displayArea(area);
+				ifNormal = 0;
+			}
+			else if (area[pos] == 0)
+			{
+				puts("Вы уже использовали этот ход, повторите снова...");
+				pos = 0;
+			}
+			else if (area[pos] == 0)
+			{
+				puts("Вы попытались замазать ход противника, выбите другой ход");
+				pos = 0;
+			}
+		}
 		else
 			printf("\nТакой позиции не существует, повторите попытку...");
 	}
-
-	return pos;
 }
 
 //////////// ПРОВЕРКА ПОБЕДНОЙ КОМБИНАЦИИ /////////
@@ -199,31 +198,4 @@ short winCombination(char *area)
 		//Если ни одна из комбинаций не подошла
 		else
 			return 0;
-}
-
-//////////// EASY BOT ////////////////
-short easyBot(char *area)
-{
-	short pos, ifNormPos;
-	pos = rand() % 11 + 1;
-	ifNormPos = 1;
-	while (ifNormPos)
-	{
-		if (area[pos] != 0 && area[pos] != 'X')
-		{
-			area[pos] = 0;
-			displayArea(area);
-			ifNormPos = 0;
-
-		}
-		else if (area[pos] == 0)
-		{
-			pos = rand() % 10 + 1;
-
-		}
-		else if (area[pos] == 'X')
-		{
-			pos = rand() % 10 + 1;
-		}
-	}
 }
